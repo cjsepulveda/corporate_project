@@ -1,0 +1,93 @@
+{
+    "nombre_escenario": "P03_CORP_conservador",
+    "tipo": "corporativo",
+    "escenarios_por_unidad": {
+        "BÁSICA 1": "BÁSICA_1_P03_BAS01_con.json",
+        "BÁSICA 2": "BÁSICA_2_P03_BAS02_con.json",
+        "BÁSICA SF": "BÁSICA_SF_P03_BAS_SF_con.json",
+        "MEDIA LOS ANDES": "MEDIA_LOS_ANDES_P01_MEDIA_LA_conservador.json",
+        "MEDIA SAN FELIPE": "MEDIA_SAN_FELIPE_P02_MEDIA_SF_con.json"
+    },
+    "tabla_proyeccion": [
+        {
+            "PERIODO": 2020,
+            "MATRICULA": 5008,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2021,
+            "MATRICULA": 4950,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2022,
+            "MATRICULA": 4697,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2023,
+            "MATRICULA": 4339,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2024,
+            "MATRICULA": 4185,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2025,
+            "MATRICULA": 4288,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2026,
+            "MATRICULA": 4476,
+            "Tipo": "Real"
+        },
+        {
+            "PERIODO": 2027,
+            "MATRICULA": 4697,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2028,
+            "MATRICULA": 4809,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2029,
+            "MATRICULA": 4792,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2030,
+            "MATRICULA": 4643,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2031,
+            "MATRICULA": 4534,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2032,
+            "MATRICULA": 4405,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2033,
+            "MATRICULA": 4306,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2034,
+            "MATRICULA": 4194,
+            "Tipo": "Proyección"
+        },
+        {
+            "PERIODO": 2035,
+            "MATRICULA": 4118,
+            "Tipo": "Proyección"
+        }
+    ]
+}

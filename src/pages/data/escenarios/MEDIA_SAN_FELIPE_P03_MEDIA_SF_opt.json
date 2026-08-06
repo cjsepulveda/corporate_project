@@ -1,0 +1,109 @@
+{
+    "nombre_escenario": "P03_MEDIA_SF_opt",
+    "unidad_educativa": "MEDIA SAN FELIPE",
+    "valores_retencion": [
+        95,
+        88,
+        95,
+        92
+    ],
+    "valores_nuevos": [
+        0,
+        12,
+        12,
+        9
+    ],
+    "valores_tabla_inicial": {
+        "2027": 256,
+        "2028": 270,
+        "2029": 278,
+        "2030": 262,
+        "2031": 257,
+        "2032": 260,
+        "2033": 257,
+        "2034": 251,
+        "2035": 252
+    },
+    "tabla_proyeccion": [
+        {
+            "Año": "2020",
+            "Valor": 875,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2021",
+            "Valor": 866,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2022",
+            "Valor": 849,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2023",
+            "Valor": 807,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2024",
+            "Valor": 802,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2025",
+            "Valor": 859,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2026",
+            "Valor": 914,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2027",
+            "Valor": 943,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2028",
+            "Valor": 954,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2029",
+            "Valor": 993,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2030",
+            "Valor": 997,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2031",
+            "Valor": 997,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2032",
+            "Valor": 987,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2033",
+            "Valor": 970,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2034",
+            "Valor": 961,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2035",
+            "Valor": 958,
+            "Tipo": "Proyección"
+        }
+    ]
+}

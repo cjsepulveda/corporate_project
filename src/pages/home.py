@@ -7,11 +7,21 @@ register_page(
     path='/'
 )
 
-image_path = 'assets/Original-Apaisado.png'
+image_path = 'assets/logo_nuevo.png'
 
 def layout():
     layout = html.Div([
-        html.Img(src=image_path),
+        
+        html.Br(), 
+        html.Img(src=image_path,
+                 style={
+                    "width": "20%",      # Ocupará la mitad del ancho de la pantalla o del Div
+                    "height": "auto"     # Mantiene la proporción original para que no se deforme
+                    }
+                   ),
+        
+        html.Br(),
+        html.Br(),
         html.P(
             [
                 "Análisis de Datos, elija una opción del menu"

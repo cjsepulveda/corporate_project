@@ -1,0 +1,109 @@
+{
+    "nombre_escenario": "P02_MEDIA_LA_pesimista",
+    "unidad_educativa": "MEDIA LOS ANDES",
+    "valores_retencion": [
+        95,
+        84,
+        90,
+        94
+    ],
+    "valores_nuevos": [
+        0,
+        38,
+        20,
+        7
+    ],
+    "valores_tabla_inicial": {
+        "2027": 393,
+        "2028": 316,
+        "2029": 387,
+        "2030": 360,
+        "2031": 320,
+        "2032": 293,
+        "2033": 272,
+        "2034": 226,
+        "2035": 176
+    },
+    "tabla_proyeccion": [
+        {
+            "Año": "2020",
+            "Valor": 1177,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2021",
+            "Valor": 1206,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2022",
+            "Valor": 1184,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2023",
+            "Valor": 1016,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2024",
+            "Valor": 1058,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2025",
+            "Valor": 1125,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2026",
+            "Valor": 1285,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2027",
+            "Valor": 1406,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2028",
+            "Valor": 1363,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2029",
+            "Valor": 1386,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2030",
+            "Valor": 1334,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2031",
+            "Valor": 1262,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2032",
+            "Valor": 1224,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2033",
+            "Valor": 1123,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2034",
+            "Valor": 1004,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2035",
+            "Valor": 875,
+            "Tipo": "Proyección"
+        }
+    ]
+}

@@ -1,0 +1,121 @@
+{
+    "nombre_escenario": "P02_BAS01_pes",
+    "unidad_educativa": "BÁSICA 1",
+    "valores_retencion": [
+        95,
+        87,
+        80,
+        92,
+        80,
+        85,
+        90,
+        90,
+        85,
+        90
+    ],
+    "valores_nuevos": [
+        0,
+        0,
+        16,
+        7,
+        12,
+        13,
+        12,
+        18,
+        13,
+        13
+    ],
+    "valores_tabla_inicial": {
+        "2027": 28,
+        "2028": 25,
+        "2029": 22,
+        "2030": 19,
+        "2031": 17,
+        "2032": 15,
+        "2033": 13,
+        "2034": 11,
+        "2035": 10
+        },
+    "tabla_proyeccion": [
+        {
+            "Año": "2020",
+            "Valor": 901,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2021",
+            "Valor": 863,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2022",
+            "Valor": 819,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2023",
+            "Valor": 746,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2024",
+            "Valor": 645,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2025",
+            "Valor": 648,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2026",
+            "Valor": 635,
+            "Tipo": "Real"
+        },
+        {
+            "Año": "2027",
+            "Valor": 603,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2028",
+            "Valor": 586,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2029",
+            "Valor": 537,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2030",
+            "Valor": 502,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2031",
+            "Valor": 476,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2032",
+            "Valor": 448,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2033",
+            "Valor": 429,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2034",
+            "Valor": 403,
+            "Tipo": "Proyección"
+        },
+        {
+            "Año": "2035",
+            "Valor": 385,
+            "Tipo": "Proyección"
+        }
+    ]
+}

@@ -338,6 +338,76 @@ body {
     
   }
 
-  .slider-retencion {
-    --Dash-Fill-Interactive-Strong: rgb(0, 123, 255);
+.slider-retencion {
+    --Dash-Fill-Interactive-Strong: #007bff;
 }
+
+.slider-nuevos {
+    --Dash-Fill-Interactive-Strong: rgb(255, 153, 0);
+}
+
+/* ============================================
+   PÁGINA PROYECCIÓN — Paleta Corporativa
+   Bicentenario de Excelencia
+   ============================================ */
+
+/* Variables de color corporativo */
+:root {
+    --corp-rojo:        #b90f00;
+    --corp-rojo-oscuro: #910c00;
+    --corp-cafe:        #0055af;
+    --corp-negro:       #1C1C1C;
+    --corp-marino:      #0055af;
+    --corp-gris:        #D5D8DC;
+    --corp-fondo:       #F5F5F5;
+}
+
+/* Fondo general de la página de proyección */
+.proyeccion-fondo {
+    background-color: var(--corp-fondo);
+}
+
+/* Menú lateral 
+.shadow-sm.border-0 {
+    border-left: 3px solid var(--corp-rojo) !important;
+    background-color:#ffffff !important;
+} */
+
+/* Títulos del menú lateral */
+.text-primary {
+    color: var(--corp-negro) !important;
+}
+
+
+
+
+/* Tabs activos */
+.nav-tabs .nav-link.active {
+    color: var(--corp-rojo) !important;
+    border-bottom: 2px solid var(--corp-rojo) !important;
+    font-weight: bold !important;
+}
+
+.nav-tabs .nav-link {
+    color: var(--corp-negro) !important;
+}
+
+/* Header de tarjetas 
+.card-header {
+    background-color: var(--corp-marino) !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+} */
+
+.card-header h6 {
+    color: #ffffff !important;
+}
+ 
+/* Summary de los grupos de sliders colapsados }
+details summary {
+    background-color: var(--corp-cafe) !important;
+    color:  #ffffff ;
+}*/
+
+
+

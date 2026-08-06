@@ -14,14 +14,15 @@ import dash_bootstrap_components as dbc
 
 # To use Font Awesome Icons
 FA621 = "https://use.fontawesome.com/releases/v6.2.1/css/all.css"
-APP_TITLE = "Rendimientos LMLA 2024"
-image_path = 'assets/Original-Apaisado.png'
+APP_TITLE = "Rendimientos xxLMLA 2024"
+image_path = 'assets/logo_nuevo.png'
 
 app = dash.Dash(
     __name__,
     suppress_callback_exceptions=True,
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,  # Dash Themes CSS
+        dbc.icons.BOOTSTRAP,
         FA621,  # Font Awesome Icons CSS
     ],
     title=APP_TITLE,
@@ -36,7 +37,8 @@ navbar = dbc.NavbarSimple(
         #dbc.NavItem(dbc.NavLink("PSU PAES PDT", class_name='option_menu_side',href="/psupdtpaes")),
         #dbc.NavItem(dbc.NavLink("Ensayos PAES", class_name='option_menu_side', href="/ensayos_paes")),
         #dbc.NavItem(dbc.NavLink("Ensayos SIMCE", class_name='option_menu_side', href="/simce_ensayos")),
-        #dbc.NavItem(dbc.NavLink("Escenarios Matricula Corporativa", class_name='option_menu_side', href="/proyeccion")),
+        dbc.NavItem(dbc.NavLink("Datos", href="/datos_corporacion")),
+        dbc.NavItem(dbc.NavLink("Escenarios", href="/proyeccion")),
         dbc.NavItem(dbc.NavLink("Matrícula", href="/matricula")),
         #dbc.DropdownMenu(
          #   size="md",
@@ -56,11 +58,10 @@ navbar = dbc.NavbarSimple(
         "Corporación Monte Aconcagua"
         ],
 
-
     brand_href="/",
     color="#b51808",
     dark=True,
-    fluid=True
+    fluid=True,
    )
     
 app.layout = html.Div(
