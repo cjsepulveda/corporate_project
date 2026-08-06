@@ -11,7 +11,4 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.4
-    disk:
-      name: escenarios-disk
-      mountPath: /opt/render/project/src/pages/data/escenarios
-      sizeGB: 1
+  
