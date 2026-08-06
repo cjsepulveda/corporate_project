@@ -1,7 +1,7 @@
 services:
   # See https://render.com/docs/blueprint-spec for more info on render blueprints
   - type: web
-    name: multi_page_lmla
+    name: monte_aconcagua_data_corp
     env: python
     plan: starter
     # A requirements.txt file must exist
