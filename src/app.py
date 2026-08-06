@@ -14,7 +14,7 @@ import dash_bootstrap_components as dbc
 
 # To use Font Awesome Icons
 FA621 = "https://use.fontawesome.com/releases/v6.2.1/css/all.css"
-APP_TITLE = "Rendimientos xxLMLA 2024"
+APP_TITLE = "Corporacion Monte Aconcagua"
 image_path = 'assets/logo_nuevo.png'
 
 app = dash.Dash(
