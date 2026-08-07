@@ -15,15 +15,15 @@
     ],
     "valores_nuevos": [
         0,
-        0,
-        16,
+        5,
+        10,
+        5,
+        9,
+        8,
         7,
-        12,
-        13,
-        12,
-        18,
-        13,
-        13
+        11,
+        8,
+        10
     ],
     "valores_tabla_inicial": {
         "2027": 28,
@@ -35,7 +35,7 @@
         "2033": 13,
         "2034": 11,
         "2035": 10
-        },
+    },
     "tabla_proyeccion": [
         {
             "Año": "2020",
@@ -69,52 +69,52 @@
         },
         {
             "Año": "2026",
-            "Valor": 635,
+            "Valor": 639,
             "Tipo": "Real"
         },
         {
             "Año": "2027",
-            "Valor": 603,
+            "Valor": 574,
             "Tipo": "Proyección"
         },
         {
             "Año": "2028",
-            "Valor": 586,
+            "Valor": 531,
             "Tipo": "Proyección"
         },
         {
             "Año": "2029",
-            "Valor": 537,
+            "Valor": 469,
             "Tipo": "Proyección"
         },
         {
             "Año": "2030",
-            "Valor": 502,
+            "Valor": 423,
             "Tipo": "Proyección"
         },
         {
             "Año": "2031",
-            "Valor": 476,
+            "Valor": 392,
             "Tipo": "Proyección"
         },
         {
             "Año": "2032",
-            "Valor": 448,
+            "Valor": 362,
             "Tipo": "Proyección"
         },
         {
             "Año": "2033",
-            "Valor": 429,
+            "Valor": 344,
             "Tipo": "Proyección"
         },
         {
             "Año": "2034",
-            "Valor": 403,
+            "Valor": 320,
             "Tipo": "Proyección"
         },
         {
             "Año": "2035",
-            "Valor": 385,
+            "Valor": 303,
             "Tipo": "Proyección"
         }
     ]

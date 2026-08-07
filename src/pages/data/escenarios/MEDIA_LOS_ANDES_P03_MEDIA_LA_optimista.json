@@ -9,9 +9,9 @@
     ],
     "valores_nuevos": [
         0,
-        38,
-        20,
-        7
+        48,
+        29,
+        8
     ],
     "valores_tabla_inicial": {
         "2027": 393,
@@ -62,47 +62,47 @@
         },
         {
             "Año": "2027",
-            "Valor": 1406,
+            "Valor": 1427,
             "Tipo": "Proyección"
         },
         {
             "Año": "2028",
-            "Valor": 1429,
+            "Valor": 1470,
             "Tipo": "Proyección"
         },
         {
             "Año": "2029",
-            "Valor": 1468,
+            "Valor": 1511,
             "Tipo": "Proyección"
         },
         {
             "Año": "2030",
-            "Valor": 1448,
+            "Valor": 1486,
             "Tipo": "Proyección"
         },
         {
             "Año": "2031",
-            "Valor": 1437,
+            "Valor": 1472,
             "Tipo": "Proyección"
         },
         {
             "Año": "2032",
-            "Valor": 1429,
+            "Valor": 1463,
             "Tipo": "Proyección"
         },
         {
             "Año": "2033",
-            "Valor": 1388,
+            "Valor": 1422,
             "Tipo": "Proyección"
         },
         {
             "Año": "2034",
-            "Valor": 1366,
+            "Valor": 1396,
             "Tipo": "Proyección"
         },
         {
             "Año": "2035",
-            "Valor": 1338,
+            "Valor": 1367,
             "Tipo": "Proyección"
         }
     ]

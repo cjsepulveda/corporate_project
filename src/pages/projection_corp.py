@@ -1004,12 +1004,14 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
         max_valor = fila_max["Valor"]
         max_anio = fila_max["Año"]
 
-        # 3. Estado de Alerta (¿Cae abajo de promedio en algún año proyectado?)
-        df_proy_solo = df[df["Tipo"] == "Proyección"]
-        quiebra_limite = (df_proy_solo["Valor"] < valor_2026 * 0.9).any()
-        
-        # 4. Cálculo matricula año 2035 para mensaje de alerta específico
+        # 3. Cálculo matricula año 2035 para mensaje de alerta específico
         valor_2035 = df[df["Año"] == "2035"]["Valor"].values[0]
+
+        # 4. Estado de Alerta (¿Cae abajo de promedio en algún año proyectado?)
+        df_proy_solo = df[df["Tipo"] == "Proyección"]
+        #quiebra_limite = (df_proy_solo["Valor"] < valor_2026 * 0.9).any()
+        quiebra_limite = valor_2035 < valor_2026 * 0.9 # nuevo quiebra límite
+        
         
         # 5. Cálculo porcentaje matricula 20235 sobre matricula 2026
 
