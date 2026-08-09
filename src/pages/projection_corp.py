@@ -640,7 +640,29 @@ layout = dbc.Container([
                                             },
                                         ]
                         ),
-                    ], className="p-3")
+                    ], className="p-3"),
+
+                    # Tarjeta para gráfico COMPARATIVO
+                    dbc.Card([
+                        dbc.CardHeader(html.Div([
+                                                html.H6(" Grafico Comparativo 2026 - Proyección: ", className="m-0 text-dark", style={"display": "inline"}),
+                                                html.Span(id="titulo-grafico-comp", className="text-white fw-bold", style={"display": "inline", "marginLeft": "5px"})
+                                                ], className="d-flex align-items-center"),
+                                                style={"backgroundColor":"#020072"}  # Otro color de fondo
+                                        ),
+                    # Contenedor del gráfico
+                        dbc.CardBody(
+                            dcc.Loading(
+                                id="corp-loading-grafico",
+                                type="circle",
+                                children=dcc.Graph(config={"displayModeBar": False}, id="grafico-comparativo"),
+                            )
+                        )
+                        ], id="tarjeta-grafico-comparativo",className="shadow-sm mt-3"), # fin card
+
+
+
+
                 ]),
 
             ], id="tabs-gestion", active_tab="tab-ingreso", className="shadow-sm bg-white rounded"), # fin dos pestañas para tablas
@@ -661,7 +683,8 @@ layout = dbc.Container([
     Output("tabla-matriz-desglose-cursos", "data"),    # 🚀 NUEVO OUTPUT DATA
     Output("tabla-matriz-desglose-cursos", "columns"), # 🚀 NUEVO OUTPUT COLUMNS DINÁMICAS
     Output("variable-matricula", "children"), # nombre unidad educativa para el titulo de gráfico
-       
+    Output("grafico-comparativo", "figure"),
+    Output("tarjeta-grafico-comparativo", "className"),
 
     Input({"type": "slider-retencion", "id": ALL}, "value"), # Lista de 10 porcentajes para retención
     Input({"type": "slider-nuevos", "id": ALL}, "value"),    # Lista de 10 cantidades de alumnos
@@ -690,8 +713,6 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
             df_corporacion, totales_por_unidad = proyecciones.proyeccion_corporativa(
                 proyecciones.matriculas_iniciales_default
             )
-
-            graph_basica = None
 
         else:
             df_corporacion, totales_por_unidad = proyecciones.proyeccion_corporativa(
@@ -876,6 +897,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
         tabla_corp_data = df_tabla_corp.to_dict(orient="records")
 
         # Tabla comparativa por unidad educativa
+        # region Tabla comparativa
         columnas_corp = [
             {"name": "Unidad Educativa", "id": "UNIDAD"},
             {"name": "Matrícula 2026", "id": "MAT_2026", "type": "numeric"},
@@ -888,10 +910,14 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
         # Bloque construccion, TABLA COMPARATIVA
         if not escenarios_seleccionados:
             tabla_comp_data = []
+            graph_tabla_comp_data = graph_objects.Figure()
+            tarjeta_grafico_comparativo = "d-none"
+
         else:
             filas = []
             total_2026 = 0
             total_2035 = 0
+            tarjeta_grafico_comparativo = "shadow-sm mt-3 d-block" 
             
             for unidad_nombre, valores in totales_por_unidad.items():
                 val_2026 = valores['2026']
@@ -940,7 +966,151 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
                 "PORCENTAJE": f"{pct_total:+.1f}%"
             })
             
-            tabla_comp_data = filas
+            tabla_comp_data = filas # Tabla comparativa para la segunda pestaña en CORPORACION
+            # endregion 
+
+            # Creación gráfico Comparativo 2026 con proyecciones si hay escenarios elegidos
+            
+            # region Preparar datos para FILTRAR escenarios corporativos segun año 1 y año 2
+            # Extraer clave tabla_proyeccion de cada unidad educativa
+            clave_extraer = "tabla_proyeccion"
+
+            # Crear nuevo diccionario solo con clave principal y tabla de proyeccion
+            nuevo_diccionario = {
+                clave_principal: sub_diccionario[clave_extraer]
+                for clave_principal, sub_diccionario in escenarios_corp.items()
+                if clave_extraer in sub_diccionario
+            }
+
+            # Calve Tipo sera eliminada del diccionario
+            clave_borrar = "Tipo"
+
+            # Crear nuevo diccionario con clave principal eliminando clave Tipo
+            datos_limpios = {
+                clave_principal: [
+                    {key_dict: value_dict for key_dict, value_dict in sub_dict.items() if key_dict != clave_borrar}
+                    for sub_dict in lista_dict
+                ]
+                for clave_principal, lista_dict in nuevo_diccionario.items()
+            }
+
+            # Crear una lista de diccionario, cada diccionario tendra UNIDAD_ACADEMICA; Año y Valor
+            filas_grafico_comparativo = []
+            for principal, lista_sub in datos_limpios.items():
+                for sub in lista_sub:
+                    filas_grafico_comparativo.append({
+                        'UNIDAD_ACADEMICA': principal,
+                        'Año': int(sub['Año']),  # Convertir el año a número
+                        'Valor': sub['Valor']
+                    })
+
+            # Crear un DataFrame inicial con tres columnas, cada diccionario es una fila
+            df_largo_grafico_comparativo = pd.DataFrame(filas_grafico_comparativo)
+
+            # Transformar (pivotear) para que los años sean columnas
+            df_ancho_grafico_comparativo = df_largo_grafico_comparativo.pivot(index='UNIDAD_ACADEMICA', columns='Año', values='Valor').reset_index()
+            df_ancho_grafico_comparativo.columns.name = None # eliminar nombre de la columna index
+
+
+            # Crear nuevo DataFrame filtrando solo las columnas deseadas
+            columnas_seleccionadas = ['UNIDAD_ACADEMICA', 2026, 2027]
+            df_nuevo_comparativo = df_ancho_grafico_comparativo[columnas_seleccionadas]
+
+            total_mat_year_01 = df_nuevo_comparativo[2026].sum()
+            total_mat_year_02 = df_nuevo_comparativo[2027].sum()
+            fila_total_comparativa = {'UNIDAD_ACADEMICA': 'CORPORACION', 2026: total_mat_year_01, 2027: total_mat_year_02}
+            df_total_comparativa = pd.DataFrame([fila_total_comparativa])
+
+            df_final_comparativo = pd.concat([df_nuevo_comparativo, df_total_comparativa], ignore_index=True)
+            df_final_comparativo['% Variación'] = (df_final_comparativo[2027]-df_final_comparativo[2026])/df_final_comparativo[2026]
+
+           
+
+            # endregion
+
+            # Definicion de variables, ejes colores para gráfico comparativo
+            x_df_tabla_comp_data = df_final_comparativo["UNIDAD_ACADEMICA"]
+            categorias_tabla_comp_data= [2026, 2027]
+            colores_tabla_comp_data= ["#305199","#FFB922"]
+
+            valor_max = df_final_comparativo['% Variación'].max()
+            valor_min = df_final_comparativo['% Variación'].min()
+            delta_valor_max = valor_max + 0.05
+            delta_valor_min = valor_min - 0.05          
+
+            # region Grafico comparativo
+            graph_tabla_comp_data = make_subplots ( specs = [[{ "secondary_y" :  True }]])
+
+            for data_value, color in zip(categorias_tabla_comp_data, colores_tabla_comp_data):
+            
+                    graph_tabla_comp_data.add_trace(
+                        graph_objects.Bar(
+                                    x=x_df_tabla_comp_data, 
+                                    y=df_final_comparativo[data_value],
+                                    marker_color = color,
+                                    name=data_value,
+                                    ),
+                                    secondary_y=False,
+                                    )
+            graph_tabla_comp_data.add_trace(
+                    graph_objects.Scatter(
+                                x=x_df_tabla_comp_data,
+                                y=df_final_comparativo["% Variación"],
+                                name="% Variación",
+                                mode="lines+markers",
+                                line=dict(color="#5F5F5F", width=3),
+                                marker=dict(color = "#ffffff", size = 12, 
+                                                    line=dict(width = 2,
+                                                    color = "#BB0000")),
+                                
+                                ),
+                        secondary_y=True,
+                        )
+            
+            graph_tabla_comp_data.update_layout(
+                                        hoverlabel_font=dict(family='Roboto mono', weight='bold', size=14, color='black'),
+                                        font_family='Roboto mono',
+                                        template="simple_white",
+                                        margin=dict(l=40, r=30, t=10, b=10),
+                                        hovermode="x unified",
+                                        yaxis2=dict(
+                                            title="Porcentaje Variación",
+                                            tickformat=".0%",
+                                            range=[delta_valor_min, delta_valor_max],
+                                            overlaying="y",
+                                            side="right"
+                                            ),
+                                        legend=dict(
+                                            orientation = "h",
+                                            x=0.15,          # Posición horizontal (0 = izquierda, 1 = derecha)
+                                            y=1.1,          # Posición vertical (0 = abajo, 1 = arriba)
+                                            xanchor="left",
+                                            yanchor="top"
+                                            )
+                                        )
+
+            graph_tabla_comp_data.update_xaxes(tickfont_weight='normal', 
+                                             tickfont_size=10, 
+                                             showgrid=False,
+                                             ticks="", 
+                                             showline=False,
+                                             title_text="",
+                                             tickfont=dict(color='gray'),
+                                             )
+            
+            graph_tabla_comp_data.update_yaxes(tickfont_weight='normal', 
+                                             showgrid=False, 
+                                             tickfont_size=14,
+                                             showline=True, 
+                                             linecolor="gray",
+                                             title_text="",
+                                             tickfont=dict(color='gray'),
+                                             )
+
+           # endregion
+
+            
+
             
         # Retornamos valores vacíos para los outputs que no aplican
         return (corp_graph, 
@@ -948,7 +1118,9 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
                 tabla_corp_data, 
                 tabla_comp_data, 
                 columnas_corp, 
-                titulo_grafico_unidad_educativa
+                titulo_grafico_unidad_educativa,
+                graph_tabla_comp_data, # gráfico comparativo CORPORACION
+                tarjeta_grafico_comparativo, # TARJETA gráfico comparativo.
                 )
 
          #      grafico  , kpi . tabla resumen , data desagregada , titulo gráfico
@@ -956,6 +1128,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
 
 # Seccion Unidades Educativa individuales
     else: 
+        tarjeta_grafico_comparativo = "d-none"
         # Sección para actualizar matriculas iniciales
 
         # PASO 1: Clonar el diccionario completo primero 
@@ -990,7 +1163,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
 
        
        
-        # region TARJETAS KPI
+       # region TARJETAS KPI
 
        # 1. Determinar nivel matrícula critica de unidad educativa, promedio años 2024, 2025 y 2026
         df_real_solo = df[df["Tipo"] == "Real"]      
@@ -1179,6 +1352,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
         # Sólo datos, Lista de diccionarios, cada diccionario es un nivel con años y matrícula
         tabla_matriz_data = df_matriz_desglose.to_dict(orient="records") 
 
+
         # Retornamos los cinco elementos alineados con la cabecera
         return (
             unidad_edu_graph, # Gráfico unidad educativa
@@ -1187,6 +1361,8 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
             tabla_matriz_data,  # Las filas con los datos desagregados por nivel y año
             columnas_matriz, # Los nombres de las columnas de cada año
             titulo_grafico_unidad_educativa, # título del gráfico
+            dash.no_update, # no actualizar grafico compartivo seccion CORPORACION
+            tarjeta_grafico_comparativo, # no mostrar grafico compartivo
            )
 
 # Callback para DESCARGAR el archivo Excel vinculando los componentes reales
