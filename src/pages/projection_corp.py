@@ -47,6 +47,21 @@ ue_options = {
 # Lista de diccionarios para 'options' usando una lista por comprensión
 ue_options_dropdown = [{'label': k, 'value': v} for k, v in ue_options.items()]
 
+periodo_corporativo = {
+                        '2027':2027,
+                        '2028':2028,
+                        '2029':2029,
+                        '2030':2030,
+                        '2031':2031,
+                        '2032':2032,
+                        '2033':2033,
+                        '2034':2034,
+                        '2035':2035,
+
+}
+
+p_corp_options_dropdown = [{'label': per, 'value': year} for per, year in periodo_corporativo.items()]
+
 # Lista de Columnas optimizadas para el menú lateral angosto en la tabla de datos
 columnas_verticales = [
     {"name": "Año", "id": "Anio", "editable": False},
@@ -652,12 +667,40 @@ layout = dbc.Container([
                                         ),
                     # Contenedor del gráfico
                         dbc.CardBody(
-                            dcc.Loading(
-                                id="corp-loading-grafico",
-                                type="circle",
-                                children=dcc.Graph(config={"displayModeBar": False}, id="grafico-comparativo"),
-                            )
-                        )
+                            [ 
+                                
+                                # Lista despegable de PERIODO para comparar
+                                html.Div(
+                                        children=[
+                                            html.H6(
+                                                [
+                                                 html.I(className="fa-solid fa-calendar-days me-2"), 
+                                                'Período'
+                                                ],
+                                                className="text-primary fw-bold mb-3"
+                                              ),
+                                              dcc.Dropdown(
+                                                id='periodo-comparativo', 
+                                                options=p_corp_options_dropdown,
+                                                value=2027,
+                                                clearable=False,
+                                                style={
+                                                        'width': '100%',          # Ancho del dropdown
+                                                        'backgroundColor': '#f0f0f0', # Color de fondo
+                                                        'color': '#333333',      # Color del texto
+                                                        'fontSize': '14px'       # Tamaño de la fuente
+                                                      },
+                                                
+                                            ),
+                                        ]),
+
+                                dcc.Loading(
+                                    id="corp-loading-grafico",
+                                    type="circle",
+                                    children=dcc.Graph(config={"displayModeBar": False}, id="grafico-comparativo"),
+                                ),
+                            ],
+                        ),
                         ], id="tarjeta-grafico-comparativo",className="shadow-sm mt-3"), # fin card
 
 
@@ -690,10 +733,11 @@ layout = dbc.Container([
     Input({"type": "slider-nuevos", "id": ALL}, "value"),    # Lista de 10 cantidades de alumnos
     Input('unidades_educativas', 'value'), # unidad educativa elegida para filtrar excel
     Input('tabla-matriculas-vertical', 'data'), # Reacciona si el usuario edita la matrícula inicial
-    Input('dropdown-escenarios-corp', 'value'),  # ← nuevo, escenarios corporativos
+    Input('dropdown-escenarios-corp', 'value'),  # Escenarios corporativos
+    Input('periodo-comparativo','value'), # dropdown periodo comporativo, solo para CORPORATIVO
 
 )
-def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, data_tabla_matriculas, escenarios_seleccionados):
+def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, data_tabla_matriculas, escenarios_seleccionados, periodo_graf_comp):
     
 # Sección Corporacion
     if unidad_edu == 'CORPORACIÓN':
@@ -1011,26 +1055,28 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
             df_ancho_grafico_comparativo = df_largo_grafico_comparativo.pivot(index='UNIDAD_ACADEMICA', columns='Año', values='Valor').reset_index()
             df_ancho_grafico_comparativo.columns.name = None # eliminar nombre de la columna index
 
-
+            periodo_comparar = periodo_graf_comp
             # Crear nuevo DataFrame filtrando solo las columnas deseadas
-            columnas_seleccionadas = ['UNIDAD_ACADEMICA', 2026, 2027]
+            columnas_seleccionadas = ['UNIDAD_ACADEMICA', 2026, periodo_comparar]
             df_nuevo_comparativo = df_ancho_grafico_comparativo[columnas_seleccionadas]
 
             total_mat_year_01 = df_nuevo_comparativo[2026].sum()
-            total_mat_year_02 = df_nuevo_comparativo[2027].sum()
-            fila_total_comparativa = {'UNIDAD_ACADEMICA': 'CORPORACION', 2026: total_mat_year_01, 2027: total_mat_year_02}
+            total_mat_year_02 = df_nuevo_comparativo[periodo_comparar].sum()
+            fila_total_comparativa = {'UNIDAD_ACADEMICA': 'CORPORACION', 2026: total_mat_year_01, periodo_comparar: total_mat_year_02}
             df_total_comparativa = pd.DataFrame([fila_total_comparativa])
 
             df_final_comparativo = pd.concat([df_nuevo_comparativo, df_total_comparativa], ignore_index=True)
-            df_final_comparativo['% Variación'] = (df_final_comparativo[2027]-df_final_comparativo[2026])/df_final_comparativo[2026]
+            df_final_comparativo['% Variación'] = (df_final_comparativo[periodo_comparar]-df_final_comparativo[2026])/df_final_comparativo[2026]
 
            
 
             # endregion
 
             # Definicion de variables, ejes colores para gráfico comparativo
+            
+            print(periodo_comparar)
             x_df_tabla_comp_data = df_final_comparativo["UNIDAD_ACADEMICA"]
-            categorias_tabla_comp_data= [2026, 2027]
+            categorias_tabla_comp_data= [2026, periodo_comparar]
             colores_tabla_comp_data= ["#305199","#FFB922"]
 
             valor_max = df_final_comparativo['% Variación'].max()
@@ -1100,7 +1146,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
             
             graph_tabla_comp_data.update_yaxes(tickfont_weight='normal', 
                                              showgrid=False, 
-                                             tickfont_size=14,
+                                             tickfont_size=12,
                                              showline=True, 
                                              linecolor="gray",
                                              title_text="",
