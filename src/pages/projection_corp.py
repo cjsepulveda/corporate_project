@@ -685,10 +685,10 @@ layout = dbc.Container([
                                                 value=2027,
                                                 clearable=False,
                                                 style={
-                                                        'width': '100%',          # Ancho del dropdown
+                                                        'width': '15%',          # Ancho del dropdown
                                                         'backgroundColor': '#f0f0f0', # Color de fondo
                                                         'color': '#333333',      # Color del texto
-                                                        'fontSize': '14px'       # Tamaño de la fuente
+                                                        'fontSize': '12px'       # Tamaño de la fuente
                                                       },
                                                 
                                             ),
@@ -1074,7 +1074,8 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
 
             # Definicion de variables, ejes colores para gráfico comparativo
             
-            print(periodo_comparar)
+            #print(periodo_comparar)
+
             x_df_tabla_comp_data = df_final_comparativo["UNIDAD_ACADEMICA"]
             categorias_tabla_comp_data= [2026, periodo_comparar]
             colores_tabla_comp_data= ["#305199","#FFB922"]
