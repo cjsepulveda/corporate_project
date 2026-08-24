@@ -574,7 +574,7 @@ layout = dbc.Container([
                  # Pestaña 1: Resumen de Matrícula Total por Año real y proyectado
                 dbc.Tab(label="Tabla de Proyecciones", tab_id="tab-ingreso", children=[
                     html.Div([
-                        html.P("La siguiente tabla muestra el desglose numérico detallado de la proyección según los valores actuales de los sliders.", className="text-muted small"),
+                        html.P("La siguiente tabla muestra la proyección según escenario simulado/cargado.", className="text-muted small"),
                         
                         # Tabla de resultados dinámica (No editable)
                         dash_table.DataTable(
@@ -605,9 +605,9 @@ layout = dbc.Container([
                 ]),
 
                 # Pestaña 2: Desagregado por Niveles Educativos
-                dbc.Tab(label="Tabla desagregada por Niveles", tab_id="tab-matriz-desglose", children=[
+                dbc.Tab(label="Tabla desagregada por Nivel o Unidad Educativa", tab_id="tab-matriz-desglose", children=[
                     html.Div([
-                        html.P("Desagregado por nivel de enseñanza. Visualiza la transferencia secuencial de alumnos año tras año.", className="text-muted small"),
+                        html.P("Tabla que muestra la evolución de la proyección por nivel o unidad educativa.", className="text-muted small"),
                         dash_table.DataTable(
                             id="tabla-matriz-desglose-cursos", # 🚀 ID único para la segunda tabla
                             style_cell={"textAlign": "center", "padding": "6px", "fontFamily": "Roboto mono", "fontSize": "12px"},
