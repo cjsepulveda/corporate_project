@@ -607,7 +607,7 @@ layout = dbc.Container([
                 # Pestaña 2: Desagregado por Niveles Educativos
                 dbc.Tab(label="Tabla desagregada por Nivel o Unidad Educativa", tab_id="tab-matriz-desglose", children=[
                     html.Div([
-                        html.P("Tabla que muestra la evolución de la proyección por nivel o unidad educativa.", className="text-muted small"),
+                        html.P("La siguiente tabla muestra la proyección por nivel o unidad educativa.", className="text-muted small"),
                         dash_table.DataTable(
                             id="tabla-matriz-desglose-cursos", # 🚀 ID único para la segunda tabla
                             style_cell={"textAlign": "center", "padding": "6px", "fontFamily": "Roboto mono", "fontSize": "12px"},
@@ -1026,7 +1026,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
                 if clave_extraer in sub_diccionario
             }
 
-            # Calve Tipo sera eliminada del diccionario
+            # Clave "Tipo" sera eliminada del diccionario
             clave_borrar = "Tipo"
 
             # Crear nuevo diccionario con clave principal eliminando clave Tipo
@@ -1056,9 +1056,13 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
             df_ancho_grafico_comparativo.columns.name = None # eliminar nombre de la columna index
 
             periodo_comparar = periodo_graf_comp
+
             # Crear nuevo DataFrame filtrando solo las columnas deseadas
             columnas_seleccionadas = ['UNIDAD_ACADEMICA', 2026, periodo_comparar]
             df_nuevo_comparativo = df_ancho_grafico_comparativo[columnas_seleccionadas]
+            
+
+           
 
             total_mat_year_01 = df_nuevo_comparativo[2026].sum()
             total_mat_year_02 = df_nuevo_comparativo[periodo_comparar].sum()
@@ -1068,14 +1072,14 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
             df_final_comparativo = pd.concat([df_nuevo_comparativo, df_total_comparativa], ignore_index=True)
             df_final_comparativo['% Variación'] = (df_final_comparativo[periodo_comparar]-df_final_comparativo[2026])/df_final_comparativo[2026]
 
-           
+            df_final_comparativo['Diferencia']=df_final_comparativo[periodo_comparar]-df_final_comparativo[2026]
+
+            print (df_final_comparativo)
 
             # endregion
 
             # Definicion de variables, ejes colores para gráfico comparativo
             
-            #print(periodo_comparar)
-
             x_df_tabla_comp_data = df_final_comparativo["UNIDAD_ACADEMICA"]
             categorias_tabla_comp_data= [2026, periodo_comparar]
             colores_tabla_comp_data= ["#305199","#FFB922"]
@@ -1104,6 +1108,7 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
                                 x=x_df_tabla_comp_data,
                                 y=df_final_comparativo["% Variación"],
                                 name="% Variación",
+                                customdata=df_final_comparativo["Diferencia"],
                                 mode="lines+markers",
                                 line=dict(color="#5F5F5F", width=3),
                                 marker=dict(color = "#ffffff", size = 12, 
@@ -1153,6 +1158,8 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
                                              title_text="",
                                              tickfont=dict(color='gray'),
                                              )
+
+            
 
            # endregion
 
