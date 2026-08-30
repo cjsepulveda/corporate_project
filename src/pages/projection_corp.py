@@ -1177,8 +1177,6 @@ def actualizar_interfaz_proyeccion(lista_retencion, lista_nuevos, unidad_edu, da
                 tarjeta_grafico_comparativo, # TARJETA gráfico comparativo.
                 )
 
-         #      grafico  , kpi . tabla resumen , data desagregada , titulo gráfico
-
 
 # Seccion Unidades Educativa individuales
     else: 
