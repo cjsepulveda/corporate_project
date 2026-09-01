@@ -461,7 +461,7 @@ def update_charts(unidad_edu):
                      labels={graph_x_axes: '','MAT_2026':''},
                      color=color_bar,
                      color_discrete_map= {'GENERAL':color_03},
-                     color_discrete_sequence=px.colors.qualitative.G10,
+                     color_discrete_sequence=px.colors.qualitative.T10,
                      template="simple_white",
                      custom_data=['SAE_2026','% Meta'],
                      text_auto=True,
