@@ -296,7 +296,7 @@ timestamp_mod = os.path.getmtime(ruta_archivo)
 fecha_mod = datetime.datetime.fromtimestamp(timestamp_mod)
 
 # Ajustar Zona Horaria
-fecha_menos_3h = fecha_mod + timedelta(hours=-4)
+fecha_menos_3h = fecha_mod + timedelta(hours=-3)
 
 # Formatear como string legible (ej: '2025-12-11 10:30:00')
 fecha_actualizada_menos_tres = fecha_menos_3h.strftime('%Y-%m-%d %H:%M:%S')
