@@ -85,7 +85,7 @@ menu_lateral = dbc.Card([
               dcc.Dropdown(
                 id='unidades_educativas', 
                 options=ue_options_dropdown,
-                value='BÁSICA 1',
+                value='CORPORACIÓN',
                 clearable=False,
                 style={
                         'width': '100%',          # Ancho del dropdown
