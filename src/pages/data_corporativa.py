@@ -17,12 +17,26 @@ register_page(
 
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("data").resolve()
-_df01_corp = _df02_cuota_mercado = _df03_cuota_mercado_basica = _df04_cuota_mercado_corp = _df05_data_sae_corp = None # cache en RAM
+# cache en RAM
+_df01_corp = \
+_df02_cuota_mercado = \
+_df02_cuota_mercado_colegios = \
+_df03_cuota_mercado_basica = \
+_df03_cuota_mercado_basica_colegios = \
+_df04_cuota_mercado_corp = \
+_df05_data_sae_corp = None 
 
 
 def load_data_corp():
     """Carga los datos de Excel solo una vez por proceso."""
-    global _df01_corp, _df02_cuota_mercado, _df03_cuota_mercado_basica, _df04_cuota_mercado_corp, _df05_data_sae_corp
+    global _df01_corp, \
+           _df02_cuota_mercado, \
+           _df02_cuota_mercado_colegios, \
+           _df03_cuota_mercado_basica, \
+           _df03_cuota_mercado_basica_colegios, \
+           _df04_cuota_mercado_corp, \
+           _df05_data_sae_corp
+    
     # Si ya se cargaron los datos, no hacemos nada.
     if _df01_corp is not None:
         return
@@ -30,7 +44,9 @@ def load_data_corp():
     workbook = DATA_PATH.joinpath('data_corp_demo.xlsx')
     _df01_corp = pd.read_excel(workbook, sheet_name='data_corp')
     _df02_cuota_mercado = pd.read_excel(workbook, sheet_name='data_mercado_media')
+    _df02_cuota_mercado_colegios = pd.read_excel(workbook, sheet_name='data_mercado_media_col')
     _df03_cuota_mercado_basica = pd.read_excel(workbook, sheet_name='data_mercado_basica')
+    _df03_cuota_mercado_basica_colegios = pd.read_excel(workbook, sheet_name='data_mercado_bas_col')
     _df04_cuota_mercado_corp = pd.read_excel(workbook, sheet_name='data_mercado_corp')
     _df05_data_sae_corp = pd.read_excel(workbook, sheet_name='data_sae_corp')
 
@@ -41,11 +57,11 @@ def obtener_datos_base():
 
 def obtener_datos_mercado():
     load_data_corp()
-    return _df02_cuota_mercado
+    return _df02_cuota_mercado, _df02_cuota_mercado_colegios
 
 def obtener_datos_mercado_basica():
     load_data_corp()
-    return _df03_cuota_mercado_basica
+    return _df03_cuota_mercado_basica, _df03_cuota_mercado_basica_colegios
 
 def obtener_datos_mercado_corp():
     load_data_corp()
@@ -218,7 +234,7 @@ menu_lateral_mercado = html.Div([
                                      ], className="d-flex align-items-center"),
                                     style={"backgroundColor": "#757575"}  # Color de fondo personalizado
                                 ),
-                dbc.CardBody(
+                dbc.CardBody([
         # Lista despegable para CUOTAS DE MERCADO
                         html.Div(
                                 children=[
@@ -243,7 +259,12 @@ menu_lateral_mercado = html.Div([
                                         
                                     ),
                                 ]),
-                                            )
+
+                        html.Br(),
+        # Contenedor vacío para tabla de colegios, se llenará con un callback
+                        html.Div(id="tabla-colegios"),
+
+                                    ])
                             ], className="shadow-sm border-1", # fin tarjeta CUOTA MERCADO
                             
                             ), # fin dbc CUOTA MERCADO
@@ -407,13 +428,15 @@ layout = dbc.Container([
                                         ], className="d-flex align-items-center"),
                                         style={"backgroundColor":"#BB0C00"}  # Otro color de fondo
                                 ),
-                dbc.CardBody(
+                dbc.CardBody([
                     dcc.Loading(
                         id="corp-loading-grafico",
                         type="circle",
                         children=dcc.Graph(config={"displayModeBar": False}, id="grafico-corp-mercado"),
-                    )
-                )
+                    ),
+                    # Contenedor vacío para tabla de colegios, se llenará con un callback
+                    #html.Div(id="tabla-colegios")
+            ])
                 ], className="shadow-sm mt-3"), # fin card
 
          ], 
@@ -566,6 +589,7 @@ def graficos_corporativos(unidad_educativa, nivel_educativo):
 # Callback para opciones graficos MERCADO
 @callback(
         Output('grafico-corp-mercado', 'figure'),
+        Output('tabla-colegios','children'),
         Input('unidades_cuota_mercado','value')
         )
 def mercado_graficos(unidad_mercado):
@@ -574,18 +598,29 @@ def mercado_graficos(unidad_mercado):
         
         df_corp_mercado = obtener_datos_mercado_corp()
         df_corp_filter_mercado = df_corp_mercado.copy()
-    
+        tabla_nombres_colegios =None
+
     elif unidad_mercado in ["MEDIA LOS ANDES", "MEDIA SAN FELIPE"]:
-        df_corp_mercado = obtener_datos_mercado()
+        df_corp_mercado, df_corp_mercado_colegios = obtener_datos_mercado()
         df_corp_filter_mercado = df_corp_mercado.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
+
+        df_corp_filter_mercado_colegios = df_corp_mercado_colegios.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
+        df_colegios = df_corp_filter_mercado_colegios.drop('UNIDAD_ACADEMICA', axis=1)
+        tabla_nombres_colegios = generar_tabla_colegios_mercado(df_colegios)
+        
     
     else:
-        df_corp_mercado = obtener_datos_mercado_basica()
+        df_corp_mercado, df_corp_mercado_colegios = obtener_datos_mercado_basica()
         df_corp_filter_mercado = df_corp_mercado.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
+
+        df_corp_filter_mercado_colegios = df_corp_mercado_colegios.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
+        df_colegios = df_corp_filter_mercado_colegios.drop('UNIDAD_ACADEMICA', axis=1)
+        tabla_nombres_colegios = generar_tabla_colegios_mercado(df_colegios)
+        
     
     grafico_mercado = generar_grafico_mercado(df_corp_filter_mercado, unidad_mercado)
     
-    return grafico_mercado
+    return grafico_mercado, tabla_nombres_colegios
 
 
 # Callback pata opciones grafico SAE
@@ -784,6 +819,26 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico):
 
 
     return graph_mercado
+
+# Función para crear tabla colegios MERCADO
+def generar_tabla_colegios_mercado(data_colegios):
+
+    data_colegios_df = data_colegios
+
+    tabla_colegios= dbc.Table.from_dataframe(data_colegios_df, 
+                                                   striped=True, 
+                                                   bordered=True, 
+                                                   hover=True,
+                                                   #color='light',
+                                                   size='sm',
+                                                   style={'width': '100%',
+                                                          'margin': 'auto', 
+                                                          'textAlign': 'left',
+                                                          "fontSize": "10px",  
+                                                          },
+                                                   #className="tabla-personalizada" # Agrega esta clase
+                                                          )
+    return tabla_colegios
 
 # Función crear grafico SAE
 def generar_grafico_sae(df_sae_unidad_educativa):
