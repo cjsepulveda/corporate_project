@@ -835,95 +835,187 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
         color_data_agrupado = ["#3067FD","#FFA21F"]
         df_mercado["TOTAL"] = df_mercado[data_agrupado].sum(axis=1)
 
+
+    if unidad_mercado_grafico == "CORPORACION":
     
-    graph_mercado = make_subplots ( rows=3, cols=1, row_heights=[0.33, 0.33, 0.33],
-                                   specs = [
-                                       [{ "secondary_y" :  True }],
-                                       [{ "secondary_y" :  True }],
-                                       [{ "secondary_y" :  True }]
-                                       ])
- 
-    #graph_mercado = go.Figure()
-
-    for mercado, color in zip(data_agrupado, color_data_agrupado):
-
-        porcentaje_mercado = ((df_mercado[mercado]/df_mercado["TOTAL"])*100).round(1)
-
-        graph_mercado.add_trace(
-            go.Bar(
-                x=df_mercado['PERIODO'], 
-                y=df_mercado[mercado], 
-                marker_color = color,
-                name=mercado,
-                text = porcentaje_mercado.astype(str) + "%",
-                textposition= "inside",
-                insidetextanchor= "middle",
-                textfont=dict(
-                size=16,                     
-                color="white",
-                weight = "bold"                                
-                ),
-                legend="legend2",
-                customdata=df_mercado[mercado],
-                hovertemplate=f"<b>{mercado}</b>"
-                            ": %{customdata:,}"
-                            "<extra></extra>"
-                ),
-                row = 2,
-                col = 1,
-                secondary_y=False,
-            )
-
+        graph_mercado = make_subplots ( rows=2, cols=1, row_heights=[0.5, 0.5],
+                                    specs = [
+                                        [{ "secondary_y" :  True }],
+                                        [{ "secondary_y" :  True }]
+                                        ])
     
-    graph_mercado.add_trace(
-            go.Scatter(
-                x=df_mercado['PERIODO'],
-                y=df_mercado["TOTAL"],
-                name="MATRICULA TOTAL MERCADO",
-                mode="lines+markers",
-                legend="legend3",
-                line=dict(color="#5F5F5F", width=3),
-                marker=dict(color = "#ffffff", size = 12, 
-                                    line=dict(width = 2,
-                                    color = "#BB0000")),
-                showlegend=True
-                ),
-                row = 1,
-                col = 1,
-                secondary_y=False,
+        #graph_mercado = go.Figure()
+
+        for mercado, color in zip(data_agrupado, color_data_agrupado):
+
+            porcentaje_mercado = ((df_mercado[mercado]/df_mercado["TOTAL"])*100).round(1)
+
+            graph_mercado.add_trace(
+                go.Bar(
+                    x=df_mercado['PERIODO'], 
+                    y=df_mercado[mercado], 
+                    marker_color = color,
+                    name=mercado,
+                    text = porcentaje_mercado.astype(str) + "%",
+                    textposition= "inside",
+                    insidetextanchor= "middle",
+                    textfont=dict(
+                    size=16,                     
+                    color="white",
+                    weight = "bold"                                
+                    ),
+                    legend="legend2",
+                    customdata=df_mercado[mercado],
+                    hovertemplate=f"<b>{mercado}</b>"
+                                ": %{customdata:,}"
+                                "<extra></extra>"
+                    ),
+                    row = 2,
+                    col = 1,
+                    secondary_y=False,
                 )
 
-    colores_linea = [ "#BB0000", "#4BBB00", "#4800BB", "#FFAF01"]
+        
+        graph_mercado.add_trace(
+                go.Scatter(
+                    x=df_mercado['PERIODO'],
+                    y=df_mercado["TOTAL"],
+                    name="MATRICULA TOTAL MERCADO",
+                    mode="lines+markers",
+                    legend="legend3",
+                    line=dict(color="#5F5F5F", width=3),
+                    marker=dict(color = "#ffffff", size = 12, 
+                                        line=dict(width = 2,
+                                        color = "#BB0000")),
+                    showlegend=True
+                    ),
+                    row = 1,
+                    col = 1,
+                    secondary_y=False,
+                    )
 
-    for i, colegios in enumerate(df_mercado_colegios['COLEGIO_REF'].unique()):
+        graph_mercado.add_trace(
+                        go.Scatter(
+                            x=df_mercado['PERIODO'],
+                            y=df_mercado["MAT_CORPORACION"],
+                            name= unidad_mercado_grafico,
+                            mode="lines+markers",
+                            legend="legend3",
+                            line=dict(color="#00C210", width=3),
+                            marker=dict(color = "#ffffff", size = 12, 
+                                                line=dict(width = 2,
+                                                color = "#00C210")),
+                            showlegend=True
+                            ),
+                            row = 1,
+                            col = 1,
+                            secondary_y=True,
+                            )
 
-        df_filtrado_colegios = df_mercado_colegios[df_mercado_colegios['COLEGIO_REF'] == colegios]
-        color_actual = colores_linea[i]
+        
+
+    else: 
+        graph_mercado = make_subplots ( rows=3, cols=1, row_heights=[0.33, 0.33, 0.33],
+                                        specs = [
+                                            [{ "secondary_y" :  True }],
+                                            [{ "secondary_y" :  True }],
+                                            [{ "secondary_y" :  True }]
+                                            ])
+        
+        #graph_mercado = go.Figure()
+
+        for mercado, color in zip(data_agrupado, color_data_agrupado):
+
+            porcentaje_mercado = ((df_mercado[mercado]/df_mercado["TOTAL"])*100).round(1)
+
+            graph_mercado.add_trace(
+                go.Bar(
+                    x=df_mercado['PERIODO'], 
+                    y=df_mercado[mercado], 
+                    marker_color = color,
+                    name=mercado,
+                    text = porcentaje_mercado.astype(str) + "%",
+                    textposition= "inside",
+                    insidetextanchor= "middle",
+                    textfont=dict(
+                    size=16,                     
+                    color="white",
+                    weight = "bold"                                
+                    ),
+                    legend="legend2",
+                    customdata=df_mercado[mercado],
+                    hovertemplate=f"<b>{mercado}</b>"
+                                ": %{customdata:,}"
+                                "<extra></extra>"
+                    ),
+                    row = 2,
+                    col = 1,
+                    secondary_y=False,
+                )
+    
+            
         graph_mercado.add_trace(
                     go.Scatter(
-                        x=df_filtrado_colegios['PERIODO'],
-                        y=df_filtrado_colegios["MATRICULA"],
-                        
+                        x=df_mercado['PERIODO'],
+                        y=df_mercado["TOTAL"],
+                        name="MATRICULA TOTAL MERCADO",
                         mode="lines+markers",
-                        name = colegios,
-                        legend="legend4",
-                    
-                        showlegend=True,
-                        line=dict(color=color_actual, width=3),
-                        marker=dict(color = "#ffffff", size = 10, 
+                        legend="legend3",
+                        line=dict(color="#5F5F5F", width=3),
+                        marker=dict(color = "#ffffff", size = 12, 
                                             line=dict(width = 2,
-                                            color = color_actual)),
+                                            color = "#BB0000")),
+                        showlegend=True
                         ),
-                        row = 3,
+                        row = 1,
                         col = 1,
                         secondary_y=False,
                         )
 
-
-
-
-
-
+        graph_mercado.add_trace(
+                                go.Scatter(
+                                    x=df_mercado['PERIODO'],
+                                    y=df_mercado["MAT_CORPORACION"],
+                                    name= unidad_mercado_grafico,
+                                    mode="lines+markers",
+                                    legend="legend3",
+                                    line=dict(color="#00C210", width=3),
+                                    marker=dict(color = "#ffffff", size = 12, 
+                                                        line=dict(width = 2,
+                                                        color = "#00C210")),
+                                    showlegend=True
+                                    ),
+                                    row = 1,
+                                    col = 1,
+                                    secondary_y=True,
+                                    )
+    
+        colores_linea = [ "#BB0000", "#4BBB00", "#4800BB", "#FFAF01"]
+    
+        for i, colegios in enumerate(df_mercado_colegios['COLEGIO_REF'].unique()):
+    
+            df_filtrado_colegios = df_mercado_colegios[df_mercado_colegios['COLEGIO_REF'] == colegios]
+            color_actual = colores_linea[i]
+            graph_mercado.add_trace(
+                        go.Scatter(
+                            x=df_filtrado_colegios['PERIODO'],
+                            y=df_filtrado_colegios["MATRICULA"],
+                            
+                            mode="lines+markers",
+                            name = colegios,
+                            legend="legend4",
+                        
+                            showlegend=True,
+                            line=dict(color=color_actual, width=3),
+                            marker=dict(color = "#ffffff", size = 10, 
+                                                line=dict(width = 2,
+                                                color = color_actual)),
+                            ),
+                            row = 3,
+                            col = 1,
+                            secondary_y=False,
+                            )
+    
 
     if unidad_mercado_grafico in ['PARV BÁSICA 1','PARV BÁSICA 2','PARV BÁSICA SAN FELIPE']:
         graph_mercado.update_traces(name="PARV_PROVINCIA", selector=dict(name="BASICAS_PROV"))
@@ -938,9 +1030,9 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                         barmode='stack',
                         barnorm='percent',
                         yaxis3_ticksuffix='%',
-                        margin=dict(l=40, r=30, t=10, b=10),
+                        margin=dict(l=40, r=30, t=10, b=5),
                         hovermode="x unified",
-                        height=800,
+                        height=650,
 
                         # Configuración de la Leyenda 1 (al lado del primer gráfico)
                         legend3=dict(
