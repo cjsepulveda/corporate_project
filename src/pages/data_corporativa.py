@@ -24,6 +24,7 @@ _df02_cuota_mercado_colegios = \
 _df03_cuota_mercado_basica = \
 _df03_cuota_mercado_basica_colegios = \
 _df04_cuota_mercado_corp = \
+_df04_cuota_col_mat_mercado = \
 _df05_data_sae_corp = None 
 
 
@@ -35,6 +36,7 @@ def load_data_corp():
            _df03_cuota_mercado_basica, \
            _df03_cuota_mercado_basica_colegios, \
            _df04_cuota_mercado_corp, \
+           _df04_cuota_col_mat_mercado, \
            _df05_data_sae_corp
     
     # Si ya se cargaron los datos, no hacemos nada.
@@ -48,6 +50,7 @@ def load_data_corp():
     _df03_cuota_mercado_basica = pd.read_excel(workbook, sheet_name='data_mercado_basica')
     _df03_cuota_mercado_basica_colegios = pd.read_excel(workbook, sheet_name='data_mercado_bas_col')
     _df04_cuota_mercado_corp = pd.read_excel(workbook, sheet_name='data_mercado_corp')
+    _df04_cuota_col_mat_mercado = pd.read_excel(workbook, sheet_name='data_col_mat_mercado')
     _df05_data_sae_corp = pd.read_excel(workbook, sheet_name='data_sae_corp')
 
 
@@ -67,9 +70,14 @@ def obtener_datos_mercado_corp():
     load_data_corp()
     return _df04_cuota_mercado_corp
 
+def obtener_datos_mat_colegios_mercado():
+    load_data_corp()
+    return _df04_cuota_col_mat_mercado
+
 def obtener_datos_sae_corp():
     load_data_corp()
     return _df05_data_sae_corp
+
 
 
 # Diccionario de Unidades Educativas
@@ -338,7 +346,7 @@ def opciones_niveles(unidad_edu):
 
 layout = dbc.Container([
 
-     # Layaout General, 2 filas, cada fila con 2 columnas,
+     # Layaout General, 3 filas, cada fila con 2 columnas,
      
      # Primera Fila para menu matriculas y gráficos matrícula
      dbc.Row([
@@ -564,6 +572,8 @@ def graficos_corporativos(unidad_educativa, nivel_educativo):
         ]
     
     lista_graficos_corp = []
+
+    
     
     for options in config_graficos_corp:
         
@@ -598,11 +608,19 @@ def mercado_graficos(unidad_mercado):
         
         df_corp_mercado = obtener_datos_mercado_corp()
         df_corp_filter_mercado = df_corp_mercado.copy()
-        tabla_nombres_colegios =None
+
+        filtro_colegios = "MEDIA LOS ANDES"
+        df_corp_col = obtener_datos_mat_colegios_mercado()
+        df_corp_filter_mat_col = df_corp_col.query("UNIDAD_ACADEMICA == @filtro_colegios").copy()
+
+        tabla_nombres_colegios = None
 
     elif unidad_mercado in ["MEDIA LOS ANDES", "MEDIA SAN FELIPE"]:
         df_corp_mercado, df_corp_mercado_colegios = obtener_datos_mercado()
         df_corp_filter_mercado = df_corp_mercado.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
+
+        df_corp_col = obtener_datos_mat_colegios_mercado()
+        df_corp_filter_mat_col = df_corp_col.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
 
         df_corp_filter_mercado_colegios = df_corp_mercado_colegios.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
         df_colegios = df_corp_filter_mercado_colegios.drop('UNIDAD_ACADEMICA', axis=1)
@@ -613,12 +631,15 @@ def mercado_graficos(unidad_mercado):
         df_corp_mercado, df_corp_mercado_colegios = obtener_datos_mercado_basica()
         df_corp_filter_mercado = df_corp_mercado.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
 
+        df_corp_col = obtener_datos_mat_colegios_mercado()
+        df_corp_filter_mat_col = df_corp_col.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
+
         df_corp_filter_mercado_colegios = df_corp_mercado_colegios.query("UNIDAD_ACADEMICA == @unidad_mercado").copy()
         df_colegios = df_corp_filter_mercado_colegios.drop('UNIDAD_ACADEMICA', axis=1)
         tabla_nombres_colegios = generar_tabla_colegios_mercado(df_colegios)
         
     
-    grafico_mercado = generar_grafico_mercado(df_corp_filter_mercado, unidad_mercado)
+    grafico_mercado = generar_grafico_mercado(df_corp_filter_mercado, unidad_mercado, df_corp_filter_mat_col)
     
     return grafico_mercado, tabla_nombres_colegios
 
@@ -652,16 +673,43 @@ def sae_graficos(sae_unidad_educativa):
 def generar_graficos_corp(df_filtrado, data_x, data_y , marker_color, line_color, formato_num):
 
     if data_y =="TOTAL_ESTUDIANTES":
+        color_palette = None
+        color_grafico = None
+        color_line = line_color
+        color_marker = marker_color
+
         color_border_marker = "#5582ff"
         color_fill = "rgba(85, 130, 255, 0.3)"
         hover_text ="Matrícula"
     
     elif data_y == "RETENCION":
+
+        if 'TIPO' in df_filtrado and "1MEDIO" in df_filtrado['NIVEL_MATRICULA'].values and "MEDIA LOS ANDES" in df_filtrado['UNIDAD_ACADEMICA'].values : 
+
+            color_palette = {'TOTAL': "#1F9900",'BÁSICA 1':"#5582ff",'BÁSICA 2': "#FFAE00"}
+            color_grafico = 'TIPO'
+            color_line = None
+            color_marker = None
+            color_fill = None
+
+        else:
+
+            color_palette = None
+            color_grafico = None
+            color_line = line_color
+            color_marker = marker_color
+            color_fill = "rgba(34, 187, 0, 0.3)"
+
         color_border_marker = "#22BB00"
-        color_fill = "rgba(34, 187, 0, 0.3)"
+        
         hover_text ="Retención"
 
     else:
+        color_palette = None
+        color_grafico = None
+        color_line = line_color
+        color_marker = marker_color
+
         color_border_marker = "#FFAE00"
         color_fill = "rgba(255, 174, 0, 0.3)"
         hover_text = "Captación"
@@ -678,64 +726,97 @@ def generar_graficos_corp(df_filtrado, data_x, data_y , marker_color, line_color
     techo_eje_y_corp = (valor_maximo_corp * 1.5)
     piso_eje_y_corp = (valor_minimo_corp * 0.0)
 
-
+       
     graph = px.line(df_filtrado, x= data_x, y= data_y,
                                
                       #title=f'Matrícula 2021 - 2026 - {label_graph}',
-                      #width=1280, 
+                      #width=1280,
+                      color = color_grafico,
+                      color_discrete_map = color_palette, 
                       height=380,
-                      template="simple_white",
+                      #template="simple_white",
                       )
-            
-    graph.update_traces(
-                          mode="markers+lines",
-                          textposition='top center',
-                          hovertemplate=
-                           f'<b> {hover_text}: </b>%{{y}}</b>',
-                          marker=dict(color = marker_color, size = 12, 
-                                        line=dict(width = 2,
-                                                  color = color_border_marker)),
-                          line=dict(width = 4, color = line_color),
-                          fill = 'tozeroy',
-                          fillcolor = color_fill,
-                    )
-    
+
+    graph.update_layout(
+                             hoverlabel_font=dict(family='Roboto mono', weight='bold', size=14, color='black'),
+                             font_family='Roboto mono',
+                             title_font_weight='bold',
+                             title_font_size=20,
+                             title_xanchor='left',
+                             margin=dict(l=40, r=30, t=10, b=10),
+                             showlegend=False,
+                             hovermode="x unified",
+                             plot_bgcolor="rgba(0,0,0,0)", 
+                             
+                             )
+
+    if color_grafico:
+
+        graph.update_traces(
+                            mode="markers+lines",
+                            textposition='top center',
+                            hovertemplate=
+                            f'<b> {hover_text}: </b>%{{y}}</b>',
+                            marker=dict(color = marker_color, size = 12, 
+                                            line=dict(width = 2,
+                                                    )),
+                            line=dict(width = 4),
+                            #fill = 'tozeroy',
+                            #fillcolor = color_fill,
+                        )
+
+    else:
+
+        graph.update_traces(
+                                    mode="markers+lines",
+                                    textposition='top center',
+                                    hovertemplate=
+                                    f'<b> {hover_text}: </b>%{{y}}</b>',
+                                    marker=dict(color = color_marker, size = 12, 
+                                                    line=dict(width = 2,
+                                                            color = color_border_marker)),
+                                    line=dict(width = 4, color = color_line),
+                                    fill = 'tozeroy',
+                                    fillcolor = color_fill,
+                                )
+                
+        
     graph.update_yaxes(tickfont_weight='normal', 
-                         showgrid=True, 
+                         gridcolor='lightgray',
+                         showgrid=True,
+                         gridwidth=1, 
                          tickfont_size=14,
                          showline=False, 
                          ticks="",
                          title_text="",
                          tickformat= formato_num,
                          tickfont=dict(color='gray'),
+                         layer="below traces",
                          range=[piso_eje_y_corp, techo_eje_y_corp])
+                         
     
     graph.update_xaxes(tickfont_weight='normal', 
                          tickfont_size=14, 
+                         gridcolor='lightgray',
                          showgrid=True,
+                         gridwidth=1,
                          ticks="", 
                          showline=False,
                          title_text="",
+                         layer="below traces" ,
                          tickfont=dict(color='gray'),
                          range=[x_min, x_max])
     
-    graph.update_layout(
-                         hoverlabel_font=dict(family='Roboto mono', weight='bold', size=14, color='black'),
-                         font_family='Roboto mono',
-                         title_font_weight='bold',
-                         title_font_size=20,
-                         title_xanchor='left',
-                         margin=dict(l=40, r=30, t=10, b=10),
-                         showlegend=False,
-                         hovermode="x unified",
-                         
-                         )
+    
     return graph
 
 # Funcion para crear grafico MERCADO
-def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico):
+def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_mercado_colegios):
 
     df_mercado = data_mercado_unidad
+    df_mercado_colegios = data_mercado_colegios
+    
+    print(df_mercado_colegios)
     
     if unidad_mercado_grafico == "CORPORACION":
         data_agrupado = ["MAT_CORPORACION", "SAN FELIPE", "LOS ANDES"]
@@ -755,9 +836,14 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico):
         df_mercado["TOTAL"] = df_mercado[data_agrupado].sum(axis=1)
 
     
-    
+    graph_mercado = make_subplots ( rows=3, cols=1, row_heights=[0.33, 0.33, 0.33],
+                                   specs = [
+                                       [{ "secondary_y" :  True }],
+                                       [{ "secondary_y" :  True }],
+                                       [{ "secondary_y" :  True }]
+                                       ])
  
-    graph_mercado = go.Figure()
+    #graph_mercado = go.Figure()
 
     for mercado, color in zip(data_agrupado, color_data_agrupado):
 
@@ -777,28 +863,109 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico):
                 color="white",
                 weight = "bold"                                
                 ),
+                legend="legend2",
                 customdata=df_mercado[mercado],
                 hovertemplate=f"<b>{mercado}</b>"
                             ": %{customdata:,}"
                             "<extra></extra>"
-                )
+                ),
+                row = 2,
+                col = 1,
+                secondary_y=False,
             )
-        
+
+    
+    graph_mercado.add_trace(
+            go.Scatter(
+                x=df_mercado['PERIODO'],
+                y=df_mercado["TOTAL"],
+                name="MATRICULA TOTAL MERCADO",
+                mode="lines+markers",
+                legend="legend3",
+                line=dict(color="#5F5F5F", width=3),
+                marker=dict(color = "#ffffff", size = 12, 
+                                    line=dict(width = 2,
+                                    color = "#BB0000")),
+                showlegend=True
+                ),
+                row = 1,
+                col = 1,
+                secondary_y=False,
+                )
+
+    colores_linea = [ "#BB0000", "#4BBB00", "#4800BB", "#FFAF01"]
+
+    for i, colegios in enumerate(df_mercado_colegios['COLEGIO_REF'].unique()):
+
+        df_filtrado_colegios = df_mercado_colegios[df_mercado_colegios['COLEGIO_REF'] == colegios]
+        color_actual = colores_linea[i]
+        graph_mercado.add_trace(
+                    go.Scatter(
+                        x=df_filtrado_colegios['PERIODO'],
+                        y=df_filtrado_colegios["MATRICULA"],
+                        
+                        mode="lines+markers",
+                        name = colegios,
+                        legend="legend4",
+                    
+                        showlegend=True,
+                        line=dict(color=color_actual, width=3),
+                        marker=dict(color = "#ffffff", size = 10, 
+                                            line=dict(width = 2,
+                                            color = color_actual)),
+                        ),
+                        row = 3,
+                        col = 1,
+                        secondary_y=False,
+                        )
+
+
+
+
+
+
+
     if unidad_mercado_grafico in ['PARV BÁSICA 1','PARV BÁSICA 2','PARV BÁSICA SAN FELIPE']:
         graph_mercado.update_traces(name="PARV_PROVINCIA", selector=dict(name="BASICAS_PROV"))
     
     graph_mercado.update_layout(
-                        hoverlabel_font=dict(family='Roboto mono', weight='bold', size=14, color='black'),
+                        hoverlabel_font=dict(family='Roboto mono', weight='bold', size=12, color='black'),
+                        hoverlabel=dict(
+                                        namelength=-1  # -1 significa "mostrar el nombre completo sin importar el largo"
+                                        ),
                         font_family='Roboto mono',
                         template="simple_white",
                         barmode='stack',
                         barnorm='percent',
-                        yaxis_ticksuffix='%',
+                        yaxis3_ticksuffix='%',
                         margin=dict(l=40, r=30, t=10, b=10),
-                        hovermode="x unified" 
+                        hovermode="x unified",
+                        height=800,
+
+                        # Configuración de la Leyenda 1 (al lado del primer gráfico)
+                        legend3=dict(
+                            x=1.02,          # Posición horizontal (justo a la derecha del gráfico)
+                            y=0.85,          # Posición vertical centrada con la fila 1
+                            yanchor="middle"
+                        ),
+                        
+                        # Configuración de la Leyenda 2 (al lado del segundo gráfico)
+                        legend2=dict(
+                            x=1.02,          # Posición horizontal igual
+                            y=0.5,          # Posición vertical ajustada para la fila 2
+                            yanchor="middle"
+                        ),
+                        # Configuración de la Leyenda 2 (al lado del segundo gráfico)
+                        legend4=dict(
+                            x=1.02,          # Posición horizontal igual
+                            y=0.15,          # Posición vertical ajustada para la fila 2
+                            yanchor="middle"
+                        )
                         )
         
-    graph_mercado.update_xaxes(tickfont_weight='normal', 
+    graph_mercado.update_xaxes(
+                         row=2, col=1,
+                         tickfont_weight='normal', 
                          tickfont_size=14, 
                          showgrid=False,
                          ticks="", 
@@ -807,7 +974,9 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico):
                          tickfont=dict(color='gray'),
                          )
         
-    graph_mercado.update_yaxes(tickfont_weight='normal', 
+    graph_mercado.update_yaxes(
+                         row=2, col=1,
+                         tickfont_weight='normal', 
                          showgrid=False, 
                          tickfont_size=14,
                          showline=False, 
@@ -815,8 +984,33 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico):
                          title_text="",
                          #tickformat= ".0%",
                          tickfont=dict(color='gray'),
+                         
                          )
 
+    
+    graph_mercado.update_yaxes(
+                         row=1, col=1,
+                         tickfont_weight='normal', 
+                         showgrid=False, 
+                         tickfont_size=14,
+                         title_text="",
+                         tickfont=dict(color='gray'),
+                         showline=True,           
+                         linecolor='gray',         
+                         tickcolor='gray',         
+                         )
+
+    graph_mercado.update_xaxes(
+                         row=1, col=1,
+                         tickfont_weight='normal', 
+                         tickfont_size=14, 
+                         showgrid=False,
+                         title_text="",
+                         showline=True,            
+                         linecolor='gray',         
+                         tickcolor='gray',         
+                         tickfont=dict(color='gray'),  
+                         )
 
     return graph_mercado
 
