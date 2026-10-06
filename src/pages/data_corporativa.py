@@ -96,9 +96,11 @@ unidades_cuota_mercado = {
                            'CORPORACIÓN' : 'CORPORACION',
                            'PARV BÁSICA 1' :  'PARV BÁSICA 1',
                            'PARV BÁSICA 2' :  'PARV BÁSICA 2',
+                           'PARV BÁSICA 1 y 2' : 'PARV BÁSICA 1 y 2',
                            'PARV BÁSICA SAN FELIPE' :  'PARV BÁSICA SAN FELIPE',
                            'BÁSICA 1': 'BÁSICA 1',
                            'BÁSICA 2': 'BÁSICA 2',
+                           'BÁSICA 1 y 2': 'BÁSICA 1 y 2',
                            'BÁSICA SAN FELIPE': 'BÁSICA SAN FELIPE',
                            'MEDIA LOS ANDES':'MEDIA LOS ANDES',
                            'MEDIA SAN FELIPE':'MEDIA SAN FELIPE',
@@ -835,7 +837,7 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
         color_data_agrupado = ["#3067FD","#FFA21F"]
         df_mercado["TOTAL"] = df_mercado[data_agrupado].sum(axis=1)
 
-
+    # opcion dos graficos
     if unidad_mercado_grafico == "CORPORACION":
     
         graph_mercado = make_subplots ( rows=2, cols=1, row_heights=[0.5, 0.5],
@@ -844,8 +846,6 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                                         [{ "secondary_y" :  True }]
                                         ])
     
-        #graph_mercado = go.Figure()
-
         for mercado, color in zip(data_agrupado, color_data_agrupado):
 
             porcentaje_mercado = ((df_mercado[mercado]/df_mercado["TOTAL"])*100).round(1)
@@ -904,7 +904,7 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                             line=dict(color="#00C210", width=3),
                             marker=dict(color = "#ffffff", size = 12, 
                                                 line=dict(width = 2,
-                                                color = "#00C210")),
+                                                color = "#009213")),
                             showlegend=True
                             ),
                             row = 1,
@@ -912,10 +912,27 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                             secondary_y=True,
                             )
 
+        graph_mercado.update_layout(
+                                    
+                            # Configuración de la Leyenda 1 (al lado del primer gráfico)
+                            legend3=dict(
+                                x=1.02,          # Posición horizontal (justo a la derecha del gráfico)
+                                y=0.85,          # Posición vertical centrada con la fila 1
+                                yanchor="middle"
+                            ),
+                            
+                            # Configuración de la Leyenda 2 (al lado del segundo gráfico)
+                            legend2=dict(
+                                x=1.02,          # Posición horizontal igual
+                                y=0.25,          # Posición vertical ajustada para la fila 2
+                                yanchor="middle"
+                            )
+                            
+                    )
         
-
+    # opción para tres gráficos
     else: 
-        graph_mercado = make_subplots ( rows=3, cols=1, row_heights=[0.33, 0.33, 0.33],
+        graph_mercado = make_subplots ( rows=3, cols=1, row_heights=[0.30, 0.4, 0.30],
                                         specs = [
                                             [{ "secondary_y" :  True }],
                                             [{ "secondary_y" :  True }],
@@ -938,7 +955,7 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                     textposition= "inside",
                     insidetextanchor= "middle",
                     textfont=dict(
-                    size=16,                     
+                    size=14,                     
                     color="white",
                     weight = "bold"                                
                     ),
@@ -952,6 +969,11 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                     col = 1,
                     secondary_y=False,
                 )
+            graph_mercado.update_layout(
+                    uniformtext_minsize=14,  
+                    uniformtext_mode='show'  
+                )
+
     
             
         graph_mercado.add_trace(
@@ -982,7 +1004,7 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                                     line=dict(color="#00C210", width=3),
                                     marker=dict(color = "#ffffff", size = 12, 
                                                         line=dict(width = 2,
-                                                        color = "#00C210")),
+                                                        color = "#00880B")),
                                     showlegend=True
                                     ),
                                     row = 1,
@@ -1016,6 +1038,31 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                             secondary_y=False,
                             )
     
+        graph_mercado.update_layout(
+                            
+                            # Configuración de la Leyenda 1 (al lado del primer gráfico)
+                            legend3=dict(
+                                x=1.02,          # Posición horizontal (justo a la derecha del gráfico)
+                                y=0.85,          # Posición vertical centrada con la fila 1
+                                yanchor="middle"
+                            ),
+                            
+                            # Configuración de la Leyenda 2 (al lado del segundo gráfico)
+                            legend2=dict(
+                                x=1.02,          # Posición horizontal igual
+                                y=0.5,          # Posición vertical ajustada para la fila 2
+                                yanchor="middle"
+                            ),
+                            # Configuración de la Leyenda 2 (al lado del segundo gráfico)
+                            legend4=dict(
+                                x=1.02,          # Posición horizontal igual
+                                y=0.15,          # Posición vertical ajustada para la fila 2
+                                yanchor="middle"
+                            )
+
+        )
+
+
 
     if unidad_mercado_grafico in ['PARV BÁSICA 1','PARV BÁSICA 2','PARV BÁSICA SAN FELIPE']:
         graph_mercado.update_traces(name="PARV_PROVINCIA", selector=dict(name="BASICAS_PROV"))
@@ -1032,27 +1079,8 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
                         yaxis3_ticksuffix='%',
                         margin=dict(l=40, r=30, t=10, b=5),
                         hovermode="x unified",
-                        height=650,
-
-                        # Configuración de la Leyenda 1 (al lado del primer gráfico)
-                        legend3=dict(
-                            x=1.02,          # Posición horizontal (justo a la derecha del gráfico)
-                            y=0.85,          # Posición vertical centrada con la fila 1
-                            yanchor="middle"
-                        ),
+                        height=700,
                         
-                        # Configuración de la Leyenda 2 (al lado del segundo gráfico)
-                        legend2=dict(
-                            x=1.02,          # Posición horizontal igual
-                            y=0.5,          # Posición vertical ajustada para la fila 2
-                            yanchor="middle"
-                        ),
-                        # Configuración de la Leyenda 2 (al lado del segundo gráfico)
-                        legend4=dict(
-                            x=1.02,          # Posición horizontal igual
-                            y=0.15,          # Posición vertical ajustada para la fila 2
-                            yanchor="middle"
-                        )
                         )
         
     graph_mercado.update_xaxes(
