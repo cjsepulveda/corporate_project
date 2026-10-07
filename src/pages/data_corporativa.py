@@ -818,7 +818,7 @@ def generar_grafico_mercado(data_mercado_unidad, unidad_mercado_grafico, data_me
     df_mercado = data_mercado_unidad
     df_mercado_colegios = data_mercado_colegios
     
-    print(df_mercado_colegios)
+    
     
     if unidad_mercado_grafico == "CORPORACION":
         data_agrupado = ["MAT_CORPORACION", "SAN FELIPE", "LOS ANDES"]
